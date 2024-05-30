@@ -119,8 +119,11 @@ def handle_blocks_by_id(request, pk):
 tokenizer1 = AutoTokenizer.from_pretrained("phi-1_5/model", local_files_only = True)
 tokenizer1.pad_token = tokenizer1.eos_token
 
-model1 = PhiForCausalLM.from_pretrained("phi-1_5/model", local_files_only = True)
-model1 = model1.to(torch.device("cuda"))
+if torch.cuda.is_available():
+    model1 = PhiForCausalLM.from_pretrained("phi-1_5/model", torch_dtype = torch.float16, local_files_only = True)
+    model1 = model1.to(torch.device("cuda"))
+else:
+    model1 = PhiForCausalLM.from_pretrained("phi-1_5/model", local_files_only = True)
 
 @api_view(['POST'])
 def generate(request):
@@ -130,7 +133,9 @@ def generate(request):
         inputs2 = inputs2[((len(inputs1) + len(inputs2) + request.data["max_new_tokens"]) - 2048):]
 
     inputs = torch.tensor([tokenizer1.convert_tokens_to_ids(inputs1 + inputs2)])
-    inputs = inputs.to(torch.device("cuda"))
+    print(tokenizer1.decode(inputs[0]))
+    if torch.cuda.is_available():
+        inputs = inputs.to(torch.device("cuda"))
 
     if "seed" in request.data:
         set_seed(request.data["seed"])
