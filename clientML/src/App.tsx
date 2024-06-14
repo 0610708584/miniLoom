@@ -123,7 +123,7 @@ function App() {
   return (
     <Box sx = {{ display: 'flex' }}>
       <FixedDrawer anchor={"left"} drawer_left_is_open={drawer_left_is_open} setDrawerLeftIsOpen={setDrawerLeftIsOpen} drawer_right_is_open={drawer_right_is_open} setDrawerRightIsOpen={setDrawerRightIsOpen}>
-        <Prompts drawer_left_is_open={drawer_left_is_open} prompts_sorted={prompts_sorted} setPromptsSorted={setPromptsSorted} listPrompts={listPrompts} openPrompt={openPrompt}/>
+        <Prompts drawer_left_is_open={drawer_left_is_open} prompts_sorted={prompts_sorted} setPromptsSorted={setPromptsSorted} setPromptCurrent={setPromptCurrent} setBlocksCurrent={setBlocksCurrent} listPrompts={listPrompts} openPrompt={openPrompt}/>
       </FixedDrawer>
 
       <Box component="main" sx={{ flexGrow: 1, px: 5, height:"100vh"}} >
