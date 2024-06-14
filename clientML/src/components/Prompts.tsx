@@ -14,11 +14,13 @@ interface Props {
   drawer_left_is_open: boolean;
   prompts_sorted: any[];
   setPromptsSorted: React.Dispatch<React.SetStateAction<any[]>>;
+  setPromptCurrent: React.Dispatch<React.SetStateAction<any>>;
+  setBlocksCurrent: React.Dispatch<React.SetStateAction<any[]>>;
   listPrompts: () => void;
   openPrompt: (id: number, branch: number) => () => Promise<void>; 
 }
 
-const Prompts: React.FC<Props> = ({ drawer_left_is_open, prompts_sorted, setPromptsSorted, listPrompts, openPrompt}) => {
+const Prompts: React.FC<Props> = ({ drawer_left_is_open, prompts_sorted, setPromptsSorted, setPromptCurrent, setBlocksCurrent, listPrompts, openPrompt}) => {
   const reorderPrompts = (index_start: number, index_end: number) => {
     let result = Array.from(prompts_sorted);
     const [removed] = result.splice(index_start, 1);
@@ -72,7 +74,12 @@ const Prompts: React.FC<Props> = ({ drawer_left_is_open, prompts_sorted, setProm
     await fetch(`http://127.0.0.1:8000/api/prompts/${id}/`, {method: 'DELETE'});
     
     listPrompts();
-    (openPrompt(prompts_sorted[0]["id"], 0))();
+    if(prompts_sorted.length == 0) {
+      setPromptCurrent({id: 0, text: "", prompt_title: "", next: null});
+      setBlocksCurrent([])
+    } else {
+      (openPrompt(prompts_sorted[0]["id"], 0))();
+    }
   };
 
   return (
